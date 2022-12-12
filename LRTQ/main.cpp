@@ -1,6 +1,10 @@
 #pragma once
+
+//Libraries provided from RTinOneWeekend
 #include "Color.h"
 #include "vec3.h"
+#include "ray.h"
+
 #include <iostream>
 
 int main() {
