@@ -40,7 +40,10 @@ int main() {
 	for (int j = height - 1; j > 0; --j) {
 		std::cerr << "\rLines Left to render" << j << "" << std::flush;
 		for (int i = 0; i < width; ++i) {
-			color pixel_color(double(i) / (width - 1), double(j) / (height - 1), 0.25);
+			auto u = double(i) / (width - 1);
+			auto v = double(j) / (height - 1);
+			ray r(origin, lower_left + u * horizontal + v * vertical - origin);
+			color pixel_color = ray_colour(r);
 			write_color(std::cout, pixel_color);
 		}
 	}
