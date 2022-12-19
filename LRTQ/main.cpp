@@ -11,7 +11,7 @@ bool sphere_hit(const point3& center, double radius, const ray& r) {
 	
 	// This works, but anything behind the image will mirror positive. That's bad.
 	
-	
+	// oc = origin - center of the sphere
 	vec3 oc = r.origin() - center;
 
 	// A = direction squared
@@ -22,6 +22,7 @@ bool sphere_hit(const point3& center, double radius, const ray& r) {
 	// C = OC squared - radius squared
 	auto c = dot(oc, oc) - radius * radius;
 
+	// discriminant = b*b - 4ac. Nothing really special.
 	auto discriminant = b * b - (4 * a * c);
 	return discriminant > 0;
 }
@@ -33,6 +34,7 @@ color ray_colour(const ray& r) {
 	if (sphere_hit(point3(0, 0, -1), 0.5, r))
 		return color(0, 1, 0);
 	
+	//Tricks to normalise vector and write a gradient
 	vec3 unit_dir = unit_vector(r.direction());
 	auto t = 0.5 * (unit_dir.y() + 1.0);
 	return(1.0 - t) * color(1.0, 1.0, 1.0) + t * color(0.5, 0.7, 1.0);
@@ -64,10 +66,16 @@ int main() {
 
 	//Write image data to buffer
 	for (int j = height - 1; j >= 0; --j) {
+		
+		// This isn't working properly. TODO: fix it
 		std::cerr << "\rLines Left to render" << j << "" << std::flush;
 		for (int i = 0; i < width; ++i) {
+			
+			
 			auto u = double(i) / (width - 1);
 			auto v = double(j) / (height - 1);
+			
+			//
 			ray r(origin, lower_left + u * horizontal + v * vertical - origin);
 			color pixel_color = ray_colour(r);
 			write_color(std::cout, pixel_color);
