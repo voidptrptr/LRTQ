@@ -7,6 +7,25 @@
 
 #include <iostream>
 
+bool sphere_hit(const point3& center, double radius, const ray& r) {
+	
+	// This works, but anything behind the image will mirror positive. That's bad.
+	
+	
+	vec3 oc = r.origin() - center;
+
+	// A = direction squared
+	auto a = dot(r.direction(), r.direction());
+
+	auto b = 2.0 * dot(oc, r.direction());
+
+	// C = OC squared - radius squared
+	auto c = dot(oc, oc) - radius * radius;
+
+	auto discriminant = b * b - (4 * a * c);
+	return discriminant > 0;
+}
+
 color ray_colour(const ray& r) {
 	
 	// If sphere_hit > 0, colour using colour vector
@@ -19,20 +38,7 @@ color ray_colour(const ray& r) {
 	return(1.0 - t) * color(1.0, 1.0, 1.0) + t * color(0.5, 0.7, 1.0);
 }
 
-bool sphere_hit(const point3& center, double radius, const ray& r) {
-	vec3 oc = r.origin() - center;
-	
-	// A = direction squared
-	auto a = dot(r.direction(), r.direction());
 
-	auto b = 2.0 * dot(oc, r.direction());
-
-	// C = OC squared - radius squared
-	auto c = dot(oc, oc) - radius * radius;
-
-	auto discriminant = b * b - (4 * a * c);
-	return discriminant > 0;
-}
 
 int main() {
 
