@@ -7,7 +7,7 @@
 
 #include <iostream>
 
-bool sphere_hit(const point3& center, double radius, const ray& r) {
+double sphere_hit(const point3& center, double radius, const ray& r) {
 	
 	// This works, but anything behind the image will mirror positive. That's bad.
 	
@@ -24,19 +24,28 @@ bool sphere_hit(const point3& center, double radius, const ray& r) {
 
 	// discriminant = b*b - 4ac. Nothing really special.
 	auto discriminant = b * b - (4 * a * c);
-	return discriminant > 0;
+	
+	//If we treat the discriminant as a unit vector, it makes things easier, I think.
+
+	if (discriminant < 0) {
+		return -1.0;
+	}
+	else {
+		return (-b - sqrt(discriminant)) / (2.0 * a);
+	}
 }
 
 color ray_colour(const ray& r) {
 	
 	// If sphere_hit > 0, colour using colour vector
-	
-	if (sphere_hit(point3(0, 0, -1), 0.5, r))
-		return color(0, 1, 0);
-	
+	auto t = sphere_hit(point3(0, 0, -1), 0.5, r);
+	if (t > 0.0) {
+		vec3 N = unit_vector(r.at(t) - vec3(0, 0, -1));
+		return 0.5 * color(N.x() + 1, N.y() + 1, N.z() + 1);
+	}
 	//Tricks to normalise vector and write a gradient
 	vec3 unit_dir = unit_vector(r.direction());
-	auto t = 0.5 * (unit_dir.y() + 1.0);
+	t = 0.5 * (unit_dir.y() + 1.0);
 	return(1.0 - t) * color(1.0, 1.0, 1.0) + t * color(0.5, 0.7, 1.0);
 }
 
